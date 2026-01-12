@@ -1,0 +1,764 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Frans – Reflectie & Oefenen</title>
+  <style>
+    :root{
+      --bg:#f4f7fb;
+      --card:#ffffff;
+      --text:#102031;
+      --muted:#5b6a7a;
+      --border:#d9e2ef;
+      --accent:#1f6feb;
+      --ok:#1a7f37;
+      --bad:#cf222e;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.35;
+    }
+    header{
+      padding:18px 14px;
+      background:#ffffff;
+      border-bottom:1px solid var(--border);
+    }
+    header .wrap{
+      max-width:980px;
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    h1{
+      font-size:18px;
+      margin:0;
+      font-weight:700;
+    }
+    .pill{
+      font-size:12px;
+      padding:6px 10px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      color:var(--muted);
+      background:#fff;
+      white-space:nowrap;
+    }
+    main{
+      max-width:980px;
+      margin:0 auto;
+      padding:16px 14px 40px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:12px;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px;
+      box-shadow:0 6px 18px rgba(16,32,49,.06);
+    }
+    .title{
+      font-weight:800;
+      margin:0 0 10px;
+      font-size:16px;
+    }
+    .subtitle{
+      margin:0 0 10px;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .q{
+      font-size:15px;
+      margin:0 0 10px;
+      font-weight:700;
+    }
+    .options{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin:10px 0 12px;
+    }
+    label.opt{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:10px 10px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      cursor:pointer;
+      background:#fff;
+    }
+    label.opt:hover{border-color:#b8c7dd}
+    input[type="radio"], input[type="checkbox"]{
+      margin-top:2px;
+      transform:scale(1.1);
+    }
+    .short{
+      width:100%;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      font-size:14px;
+      outline:none;
+    }
+    .short:focus{border-color:#9bb7ea; box-shadow:0 0 0 4px rgba(31,111,235,.12)}
+    .row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      justify-content:flex-end;
+      margin-top:8px;
+    }
+    button{
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:700;
+    }
+    button.primary{
+      background:var(--accent);
+      border-color:var(--accent);
+      color:#fff;
+    }
+    button:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+    }
+    .small{
+      font-size:12px;
+      color:var(--muted);
+    }
+    .hr{
+      height:1px;
+      background:var(--border);
+      margin:14px 0;
+    }
+    .kvs{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:8px;
+      margin-top:8px;
+    }
+    .kv{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      padding:10px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:#fff;
+    }
+    .tag-ok{color:var(--ok); font-weight:800}
+    .tag-bad{color:var(--bad); font-weight:800}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace}
+    .hide{display:none}
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Frans – Reflectie & Oefenen</h1>
+    <div class="pill" id="statusPill">Reflectie: vraag 1/7</div>
+  </div>
+</header>
+
+<main>
+  <div class="grid">
+    <section class="card" id="appCard">
+      <p class="title" id="blockTitle">Reflectie</p>
+      <p class="subtitle" id="blockSubtitle">Beantwoord de vragen. Je krijgt pas na de reflectie feedback en één korte oefening.</p>
+      <div id="content"></div>
+    </section>
+
+    <section class="card hide" id="debugCard">
+      <p class="title">Antwoorden (intern / debug)</p>
+      <p class="subtitle">Je kunt dit uitzetten door <span class="mono">DEBUG=false</span> te zetten in de code.</p>
+      <pre class="mono" id="debugOut"></pre>
+    </section>
+  </div>
+</main>
+
+<script>
+/* =========================
+   Instellingen
+========================= */
+const DEBUG = false; // true als je antwoorden-JSON wilt zien
+
+/* =========================
+   Bronmateriaal (uit screenshot, uitbreidbaar)
+   - Woordjes: NE -> FR (voor oefening NE?FR)
+   - Zinnen: alleen letterlijk uit bron C en G (zoals zichtbaar in screenshot)
+========================= */
+const VOCAB_NE_FR = [
+  // A (terrasse / basis)
+  {ne:"het ijsje", fr:"la glace"},
+  {ne:"de tafel", fr:"la table"},
+  {ne:"het café", fr:"le café"},
+  {ne:"goed", fr:"bon"},
+  {ne:"ik neem", fr:"je prends"},
+  {ne:"ik zou graag willen", fr:"je voudrais"},
+  {ne:"het kost", fr:"ça coûte"},
+  {ne:"je kunt", fr:"tu peux"},
+  {ne:"komen", fr:"venir"},
+  {ne:"liever hebben", fr:"préférer"},
+  {ne:"hatten", fr:"détester"},
+  {ne:"aanbieden", fr:"adorer"},
+  {ne:"aankomen", fr:"arriver"},
+  {ne:"bellen", fr:"téléphoner"},
+  {ne:"oké", fr:"d'accord"},
+  {ne:"dus", fr:"donc"},
+  {ne:"en", fr:"et"},
+  {ne:"ook", fr:"aussi"},
+  {ne:"heel mooi", fr:"pour moi"},
+
+  // F / G (acheter quelque chose)
+  {ne:"helpen", fr:"aider"},
+  {ne:"zoeken", fr:"chercher"},
+  {ne:"vinden", fr:"trouver"},
+  {ne:"kijken naar", fr:"regarder"},
+  {ne:"houden van", fr:"aimer"},
+  {ne:"maar", fr:"mais"},
+  {ne:"met", fr:"avec"},
+  {ne:"veel", fr:"beaucoup"},
+  {ne:"altijd", fr:"toujours"},
+  {ne:"hoeveel", fr:"combien"},
+  {ne:"de winkel", fr:"le magasin"},
+  {ne:"de vriend", fr:"le copain"},
+  {ne:"de bakkerij", fr:"la boulangerie"},
+  {ne:"de croissant", fr:"le croissant"},
+  {ne:"het stokbrood", fr:"la baguette"},
+  {ne:"de kaas", fr:"le fromage"},
+  {ne:"de tas", fr:"le sac"},
+  {ne:"nieuw", fr:"nouveau"},
+  {ne:"vaak", fr:"souvent"},
+  {ne:"kopen", fr:"acheter"},
+  {ne:"gaan", fr:"aller"},
+  {ne:"boodschappen doen", fr:"faire les courses"},
+  {ne:"ik heb honger", fr:"j'ai faim"},
+  {ne:"ik heb dorst", fr:"j'ai soif"},
+];
+
+const SOURCE_C_SENTENCES_FR = [
+  "Tu aimes les crêpes?",
+  "Non, je déteste les crêpes.",
+  "Je préfère les pizzas.",
+  "Monsieur, la carte s'il vous plaît.",
+  "Un coca et une pizza, s'il vous plaît.",
+  "Où sont les toilettes?",
+  "C'est ici.",
+  "Merci.",
+  "Voilà.",
+  "Merci et au revoir!",
+  "De rien."
+];
+
+const SOURCE_G_SENTENCES_FR = [
+  "Pardon, je cherche la boulangerie.",
+  "C'est là-bas.",
+  "Vous avez une baguette?",
+  "Ça coûte combien?",
+  "Ça coûte cinquante euros.",
+  "Je ne comprends pas."
+];
+
+/* =========================
+   Reflectievragen (UI-gestuurd)
+========================= */
+const REFLECTION = [
+  {
+    id:"q1",
+    type:"single-choice",
+    question:"Hoe ging de toets volgens jou?",
+    options:["Het ging moeilijk.","Het ging redelijk.","Het ging goed."]
+  },
+  {
+    id:"q2",
+    type:"single-choice",
+    question:"Welk onderdeel vond je het lastigst op de toets?",
+    options:["Woordenschat","Grammatica: werkwoorden op -er","Grammatica: ontkenning","Leesvaardigheid","Luistervaardigheid","Zinnen maken"]
+  },
+  {
+    id:"q3",
+    type:"multiple-choice",
+    question:"Hoe heb je je voorbereid op de toets? (Meerdere antwoorden mogelijk)",
+    options:["Woorden online geleerd","Woorden doorgelezen","Grammatica geoefend","Leesopdrachten gemaakt","Uitleg opnieuw bekeken","Samen geleerd / laten overhoren","Oefentoets gemaakt","Ik heb niet echt geleerd"]
+  },
+  {
+    id:"q4",
+    type:"single-choice",
+    question:"Wanneer ben je begonnen met leren?",
+    options:["Meer dan een week van tevoren","Een paar dagen van tevoren","1 dag of later","Ik heb nauwelijks geleerd"]
+  },
+  {
+    id:"q5",
+    type:"single-choice",
+    question:"Welke manier van voorbereiden hielp je het meest? (Kies de beste optie)",
+    options:["Oefenen met opdrachten","Woorden leren","Uitleg opnieuw bekijken","Me laten overhoren","De oefentoets maken","Mijn voorbereiding hielp niet goed"]
+  },
+  {
+    id:"q6",
+    type:"single-choice",
+    question:"Waar wil je als EERSTE mee oefenen voor de volgende toets?",
+    options:["Woordjes","Grammatica","Leesvaardigheid","Franse zinnen maken"]
+  },
+  {
+    id:"q7",
+    type:"short-text",
+    question:"Wat ga je de volgende keer anders doen om je resultaat te verbeteren?",
+    hint:"(Max. 1 zin. Alles is goed: ook “geen idee”.)"
+  }
+];
+
+/* =========================
+   App state
+========================= */
+const state = {
+  step: 0,
+  answers: {},
+  phase: "reflection", // reflection | practice
+  practice: {
+    focus: null,          // derived from q6
+    mode: "standard",     // standard | harder
+    type: null,           // words | sentences | er | neg | reading
+    items: [],
+    user: {},
+    checked: false,
+    lastSignature: null
+  }
+};
+
+const el = (id)=>document.getElementById(id);
+const content = el("content");
+const statusPill = el("statusPill");
+const debugCard = el("debugCard");
+const debugOut = el("debugOut");
+
+if(DEBUG){ debugCard.classList.remove("hide"); }
+
+/* =========================
+   Helpers
+========================= */
+function setStatus(text){ statusPill.textContent = text; }
+function saveAnswer(id, value){ state.answers[id] = value; renderDebug(); }
+function renderDebug(){
+  if(!DEBUG) return;
+  debugOut.textContent = JSON.stringify(state.answers, null, 2);
+}
+
+function normalize(str){
+  return (str||"")
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g," ")
+    .replace(/[’']/g,"'");
+}
+
+// accent-tolerant check for typed answers (we still show correct answer with accents)
+function stripAccents(s){
+  return (s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+}
+function sameLoose(a,b){
+  const A = stripAccents(normalize(a));
+  const B = stripAccents(normalize(b));
+  return A === B;
+}
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function pickDifferent(pool, n, forbiddenSet){
+  const candidates = pool.filter(x => !forbiddenSet.has(signatureOf(x)));
+  const chosen = shuffle(candidates).slice(0,n);
+  return chosen;
+}
+function signatureOf(x){
+  return JSON.stringify(x);
+}
+
+/* =========================
+   Reflectie UI
+========================= */
+function renderReflection(){
+  const idx = state.step;
+  const q = REFLECTION[idx];
+  el("blockTitle").textContent = "Reflectie";
+  el("blockSubtitle").textContent = "Beantwoord de vragen. Je krijgt pas na de reflectie feedback en één korte oefening.";
+  setStatus(`Reflectie: vraag ${idx+1}/7`);
+
+  content.innerHTML = "";
+
+  const qEl = document.createElement("p");
+  qEl.className = "q";
+  qEl.textContent = q.question;
+  content.appendChild(qEl);
+
+  const optionsWrap = document.createElement("div");
+  optionsWrap.className = "options";
+  content.appendChild(optionsWrap);
+
+  let canContinue = false;
+
+  if(q.type === "single-choice"){
+    q.options.forEach((opt,i)=>{
+      const id = `${q.id}_${i}`;
+      const label = document.createElement("label");
+      label.className = "opt";
+      label.innerHTML = `<input type="radio" name="${q.id}" id="${id}" value="${opt}"><div>${opt}</div>`;
+      optionsWrap.appendChild(label);
+      label.querySelector("input").addEventListener("change", ()=>{
+        canContinue = true;
+        nextBtn.disabled = false;
+      });
+    });
+  }
+
+  if(q.type === "multiple-choice"){
+    q.options.forEach((opt,i)=>{
+      const id = `${q.id}_${i}`;
+      const label = document.createElement("label");
+      label.className = "opt";
+      label.innerHTML = `<input type="checkbox" name="${q.id}" id="${id}" value="${opt}"><div>${opt}</div>`;
+      optionsWrap.appendChild(label);
+      label.querySelector("input").addEventListener("change", ()=>{
+        // meerdere keuzes toegestaan; doorgaan zodra er minstens 1 is aangevinkt
+        const checked = [...optionsWrap.querySelectorAll("input[type=checkbox]")].some(x=>x.checked);
+        nextBtn.disabled = !checked;
+      });
+    });
+  }
+
+  if(q.type === "short-text"){
+    const inp = document.createElement("input");
+    inp.className = "short";
+    inp.type = "text";
+    inp.placeholder = "Typ hier (max. 1 zin)…";
+    inp.setAttribute("maxlength","140");
+    optionsWrap.appendChild(inp);
+
+    const hint = document.createElement("p");
+    hint.className = "small";
+    hint.textContent = q.hint || "";
+    content.appendChild(hint);
+
+    inp.addEventListener("input", ()=>{
+      // accepteer elk antwoord zodra er minstens 1 teken is
+      nextBtn.disabled = inp.value.length < 1;
+    });
+  }
+
+  const row = document.createElement("div");
+  row.className = "row";
+  content.appendChild(row);
+
+  const backBtn = document.createElement("button");
+  backBtn.textContent = "? Terug";
+  backBtn.disabled = idx === 0;
+  backBtn.addEventListener("click", ()=>{
+    state.step = Math.max(0, state.step-1);
+    renderReflection();
+  });
+
+  const nextBtn = document.createElement("button");
+  nextBtn.className = "primary";
+  nextBtn.textContent = (idx === REFLECTION.length-1) ? "Afronden ?" : "Verder ?";
+  nextBtn.disabled = true;
+
+  nextBtn.addEventListener("click", ()=>{
+    // opslaan
+    if(q.type === "single-choice"){
+      const chosen = content.querySelector(`input[name="${q.id}"]:checked`);
+      saveAnswer(q.id, chosen ? chosen.value : null);
+    }
+    if(q.type === "multiple-choice"){
+      const chosen = [...content.querySelectorAll(`input[name="${q.id}"]:checked`)].map(x=>x.value);
+      saveAnswer(q.id, chosen);
+    }
+    if(q.type === "short-text"){
+      const txt = content.querySelector("input[type=text]").value;
+      saveAnswer(q.id, txt);
+    }
+
+    // volgende stap
+    if(idx < REFLECTION.length-1){
+      state.step++;
+      renderReflection();
+    }else{
+      // reflectie klaar
+      startPracticePhase();
+    }
+  });
+
+  row.appendChild(backBtn);
+  row.appendChild(nextBtn);
+}
+
+/* =========================
+   Na reflectie: feedback + conclusie + opdrachtkeuze
+========================= */
+function startPracticePhase(){
+  state.phase = "practice";
+  setStatus("Oefenen");
+
+  // Focus alleen op basis van Q6
+  const focus = state.answers.q6; // "Woordjes" | "Grammatica" | "Leesvaardigheid" | "Franse zinnen maken"
+  state.practice.focus = focus;
+
+  // map focus ? type
+  // Grammatica splitsen we hier eenvoudig: als q2 specifiek was, gebruiken we die alleen als q6 ontbreekt.
+  let type = null;
+  if(focus === "Woordjes") type = "words";
+  if(focus === "Franse zinnen maken") type = "sentences";
+  if(focus === "Leesvaardigheid") type = "reading";
+  if(focus === "Grammatica") {
+    // Kies standaard -er (jij kunt dit later in UI uitbreiden met keuze)
+    // Hier houden we het simpel en consistent.
+    type = "er";
+  }
+  state.practice.type = type;
+  state.practice.mode = "standard";
+  state.practice.checked = false;
+  state.practice.user = {};
+
+  renderPostReflection();
+}
+
+function renderPostReflection(){
+  el("blockTitle").textContent = "Na je reflectie";
+  el("blockSubtitle").textContent = "Eerst een korte terugkoppeling, daarna oefen je 10 minuten op één onderdeel.";
+
+  content.innerHTML = "";
+
+  // ?? Terugkoppeling
+  const fbTitle = document.createElement("p");
+  fbTitle.className = "title";
+  fbTitle.textContent = "?? Terugkoppeling op jouw reflectie";
+  content.appendChild(fbTitle);
+
+  const fbText = document.createElement("p");
+  fbText.className = "subtitle";
+
+  const q1 = state.answers.q1;
+  const q4 = state.answers.q4;
+  const q5 = state.answers.q5;
+
+  // 2–3 zinnen, erkenning, geen tips
+  let t1 = "Dankjewel voor je antwoorden.";
+  let t2 = q1 ? `Je zegt dat het ${q1.toLowerCase().replace("het ging ","")} ging.` : "Je hebt nagedacht over hoe het ging.";
+  let t3 = (q4 && q5) ? `Je voorbereiding begon: “${q4}”, en wat jou het meest hielp was: “${q5}”.` : "Je hebt ook aangegeven hoe je je hebt voorbereid.";
+  fbText.textContent = `${t1} ${t2} ${t3}`;
+  content.appendChild(fbText);
+
+  // ?? Conclusie
+  const conclTitle = document.createElement("p");
+  conclTitle.className = "title";
+  conclTitle.textContent = "?? Korte conclusie na je reflectie";
+  content.appendChild(conclTitle);
+
+  const concl = document.createElement("p");
+  concl.className = "subtitle";
+  const focus = state.practice.focus || "één onderdeel";
+  concl.textContent =
+    `Je neemt de tijd om terug te kijken op je toets, dat helpt je al vooruit. ` +
+    `Je eerste focus wordt: ${focus.toLowerCase()}. Dan ga je zo meteen meteen oefenen.`;
+  content.appendChild(concl);
+
+  const hr = document.createElement("div");
+  hr.className = "hr";
+  content.appendChild(hr);
+
+  // Oefenopdracht
+  generatePractice(true); // true = eerste opdracht
+  renderPractice();
+}
+
+/* =========================
+   Oefeningen genereren (anti-herhaling)
+========================= */
+function generatePractice(isFirst=false){
+  const type = state.practice.type;
+  const mode = state.practice.mode;
+
+  // signature van vorige set om overlap te voorkomen
+  const forbidden = new Set();
+  if(state.practice.lastSignature){
+    forbidden.add(state.practice.lastSignature);
+  }
+
+  if(type === "words"){
+    // 10-15 items, multiple choice NE->FR (standaard)
+    const n = (mode==="harder") ? 12 : 10;
+    const pool = VOCAB_NE_FR.map(x=>({ne:x.ne, fr:x.fr}));
+
+    // kies set zonder exact dezelfde signature
+    let items = shuffle(pool).slice(0, n);
+
+    // anti-overlap t.o.v. vorige woorden
+    if(state.practice.items?.length){
+      const prevNE = new Set(state.practice.items.map(x=>x.ne));
+      items = shuffle(pool.filter(x=>!prevNE.has(x.ne))).slice(0,n);
+      if(items.length < n){
+        // fallback als te weinig: vul aan (maar liever weinig dan crash)
+        const rest = shuffle(pool.filter(x=>!items.some(it=>it.ne===x.ne))).slice(0, n-items.length);
+        items = items.concat(rest);
+      }
+    }
+
+    state.practice.items = items;
+    state.practice.user = {};
+    state.practice.checked = false;
+    state.practice.lastSignature = JSON.stringify(items.map(x=>x.ne));
+
+  } else if(type === "sentences"){
+    // standaard: zinnen in juiste volgorde (6-7 zinnen) — alleen bron C/G
+    const all = SOURCE_C_SENTENCES_FR.concat(SOURCE_G_SENTENCES_FR)
+      .map(fr => ({fr}));
+
+    let count = (mode==="harder") ? 7 : 6;
+
+    // anti-herhaling: kies andere zinnen dan vorige set
+    let items = shuffle(all);
+    if(state.practice.items?.length){
+      const prev = new Set(state.practice.items.map(x=>x.fr));
+      items = shuffle(all.filter(x=>!prev.has(x.fr)));
+      if(items.length < count) items = shuffle(all);
+    }
+    items = items.slice(0, count).map(x=>{
+      // split in chunks (woorden)
+      const parts = x.fr
+        .replace(/\?/g," ?")
+        .replace(/!/g," !")
+        .replace(/\./g," .")
+        .replace(/,/g," ,")
+        .split(" ")
+        .filter(Boolean);
+
+      // simpele shuffle voor “foute volgorde”
+      const scrambled = shuffle(parts);
+      return { fr:x.fr, parts, scrambled };
+    });
+
+    state.practice.items = items;
+    state.practice.user = {};     // user[index] = array of chosen parts in order
+    state.practice.checked = false;
+    state.practice.lastSignature = JSON.stringify(items.map(x=>x.fr));
+
+  } else if(type === "er"){
+    // invulzinnen met 1 lege plek: vervoegde vorm
+    // Alleen regelmatige -er: habiter, parler, aimer, regarder, manger
+    // Geen nous mangeons (verboden), dus vermijden we "nous" bij manger.
+    const verbs = [
+      {inf:"habiter", stem:"habit"},
+      {inf:"parler", stem:"parl"},
+      {inf:"aimer", stem:"aim"},
+      {inf:"regarder", stem:"regard"},
+      {inf:"manger", stem:"mang"}
+    ];
+    const subjects = [
+      {fr:"je", end:"e"},
+      {fr:"tu", end:"es"},
+      {fr:"il", end:"e"},
+      {fr:"elle", end:"e"},
+      {fr:"nous", end:"ons"},
+      {fr:"vous", end:"ez"},
+      {fr:"ils", end:"ent"},
+      {fr:"elles", end:"ent"},
+    ];
+
+    const makeItem = (sub, v) => {
+      const verbForm = v.stem + sub.end;
+      return {
+        sentence: `${sub.fr} ____ ici.`,
+        answer: verbForm,
+        meta: {sub: sub.fr, verb: v.inf}
+      };
+    };
+
+    let pool = [];
+    verbs.forEach(v=>{
+      subjects.forEach(s=>{
+        // vermijd nous + manger
+        if(v.inf==="manger" && s.fr==="nous") return;
+        pool.push(makeItem(s,v));
+      });
+    });
+
+    // anti-herhaling: andere items dan vorige
+    let n = (mode==="harder") ? 10 : 8;
+    let items = shuffle(pool);
+    if(state.practice.items?.length){
+      const prev = new Set(state.practice.items.map(x=>x.sentence+"|"+x.answer));
+      items = shuffle(pool.filter(x=>!prev.has(x.sentence+"|"+x.answer)));
+      if(items.length < n) items = shuffle(pool);
+    }
+    items = items.slice(0,n);
+
+    state.practice.items = items;
+    state.practice.user = {}; // user[i]=typed
+    state.practice.checked = false;
+    state.practice.lastSignature = JSON.stringify(items.map(x=>x.sentence));
+
+  } else if(type === "neg"){
+    // Ontkenning: alleen ne...pas en ce n'est pas
+    const pool = [
+      {sentence:"Je n'aime pas le lait.", answer:"n'aime"},
+      {sentence:"Je n'habite pas à Paris.", answer:"n'habite"},
+      {sentence:"Ce n'est pas bon.", answer:"n'est"},
+      {sentence:"Je ne comprends pas.", answer:"comprends"}
+    ];
+    let n = (mode==="harder") ? 10 : 8;
+    // herhaal pool als nodig (maar liever: vul aan met variatie uit steunwoorden)
+    const expanded = pool.concat([
+      {sentence:"Je ne parle pas.", answer:"parle"},
+      {sentence:"Tu ne regardes pas.", answer:"regardes"},
+      {sentence:"Il n'aime pas.", answer:"n'aime"},
+      {sentence:"Elle n'habite pas ici.", answer:"n'habite"},
+      {sentence:"Nous ne parlons pas.", answer:"parlons"},
+      {sentence:"Vous ne regardez pas.", answer:"regardez"}
+    ]);
+
+    let items = shuffle(expanded);
+    if(state.practice.items?.length){
+      const prev = new Set(state.practice.items.map(x=>x.sentence));
+      items = shuffle(expanded.filter(x=>!prev.has(x.sentence)));
+      if(items.length < n) items = shuffle(expanded);
+    }
+    items = items.slice(0,n).map(x=>{
+      // invulplek is de persoonsvorm (zoals jij wilt), 1 blank
+      // We tonen de zin met blank in plaats van werkwoord.
+      // We vervangen alleen het werkwoorddeel dat in answer staat als losse check.
+      const s = x.sentence;
+      // simpele aanpak: vervang het eerste voorkomen van answer (zonder/ met n')
+      // We maken modelzinnen met blank in vaste positie.
+      let blanked = s;
+      // probeer exact answer te vervangen
+      blanked = blanked.replace(x.answer, "____");
+      return { sentence: blanked, answer: x.answer, full: s };
+    });
+
+    state.practice.items = items;
+    state.practice.user = {};
+    state.practice.checked = false;
+    state.practice.lastSignature = JSON.stringify(items.map(x=>x.full));
+
+  } else if(type === "reading"){
+    // Vaste structuur: 2-3 alinea's, 90-120 woorden, A1, steunwoorden + sim
