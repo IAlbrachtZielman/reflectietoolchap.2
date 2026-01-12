@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Frans ñ Reflectie & Oefenen</title>
+  <title>Frans ‚Äì Reflectie & Oefenen</title>
   <style>
     :root{
       --bg:#f4f7fb;
@@ -171,7 +171,7 @@
 <body>
 <header>
   <div class="wrap">
-    <h1>Frans ñ Reflectie & Oefenen</h1>
+    <h1>Frans ‚Äì Reflectie & Oefenen</h1>
     <div class="pill" id="statusPill">Reflectie: vraag 1/7</div>
   </div>
 </header>
@@ -180,7 +180,7 @@
   <div class="grid">
     <section class="card" id="appCard">
       <p class="title" id="blockTitle">Reflectie</p>
-      <p class="subtitle" id="blockSubtitle">Beantwoord de vragen. Je krijgt pas na de reflectie feedback en ÈÈn korte oefening.</p>
+      <p class="subtitle" id="blockSubtitle">Beantwoord de vragen. Je krijgt pas na de reflectie feedback en √©√©n korte oefening.</p>
       <div id="content"></div>
     </section>
 
@@ -207,19 +207,19 @@ const VOCAB_NE_FR = [
   // A (terrasse / basis)
   {ne:"het ijsje", fr:"la glace"},
   {ne:"de tafel", fr:"la table"},
-  {ne:"het cafÈ", fr:"le cafÈ"},
+  {ne:"het caf√©", fr:"le caf√©"},
   {ne:"goed", fr:"bon"},
   {ne:"ik neem", fr:"je prends"},
   {ne:"ik zou graag willen", fr:"je voudrais"},
-  {ne:"het kost", fr:"Áa co˚te"},
+  {ne:"het kost", fr:"√ßa co√ªte"},
   {ne:"je kunt", fr:"tu peux"},
   {ne:"komen", fr:"venir"},
-  {ne:"liever hebben", fr:"prÈfÈrer"},
-  {ne:"hatten", fr:"dÈtester"},
+  {ne:"liever hebben", fr:"pr√©f√©rer"},
+  {ne:"hatten", fr:"d√©tester"},
   {ne:"aanbieden", fr:"adorer"},
   {ne:"aankomen", fr:"arriver"},
-  {ne:"bellen", fr:"tÈlÈphoner"},
-  {ne:"okÈ", fr:"d'accord"},
+  {ne:"bellen", fr:"t√©l√©phoner"},
+  {ne:"ok√©", fr:"d'accord"},
   {ne:"dus", fr:"donc"},
   {ne:"en", fr:"et"},
   {ne:"ook", fr:"aussi"},
@@ -253,25 +253,25 @@ const VOCAB_NE_FR = [
 ];
 
 const SOURCE_C_SENTENCES_FR = [
-  "Tu aimes les crÍpes?",
-  "Non, je dÈteste les crÍpes.",
-  "Je prÈfËre les pizzas.",
-  "Monsieur, la carte s'il vous plaÓt.",
-  "Un coca et une pizza, s'il vous plaÓt.",
-  "O˘ sont les toilettes?",
+  "Tu aimes les cr√™pes?",
+  "Non, je d√©teste les cr√™pes.",
+  "Je pr√©f√®re les pizzas.",
+  "Monsieur, la carte s'il vous pla√Æt.",
+  "Un coca et une pizza, s'il vous pla√Æt.",
+  "O√π sont les toilettes?",
   "C'est ici.",
   "Merci.",
-  "Voil‡.",
+  "Voil√†.",
   "Merci et au revoir!",
   "De rien."
 ];
 
 const SOURCE_G_SENTENCES_FR = [
   "Pardon, je cherche la boulangerie.",
-  "C'est l‡-bas.",
+  "C'est l√†-bas.",
   "Vous avez une baguette?",
-  "«a co˚te combien?",
-  "«a co˚te cinquante euros.",
+  "√áa co√ªte combien?",
+  "√áa co√ªte cinquante euros.",
   "Je ne comprends pas."
 ];
 
@@ -319,7 +319,7 @@ const REFLECTION = [
     id:"q7",
     type:"short-text",
     question:"Wat ga je de volgende keer anders doen om je resultaat te verbeteren?",
-    hint:"(Max. 1 zin. Alles is goed: ook ìgeen ideeî.)"
+    hint:"(Max. 1 zin. Alles is goed: ook ‚Äúgeen idee‚Äù.)"
   }
 ];
 
@@ -364,7 +364,7 @@ function normalize(str){
     .toLowerCase()
     .trim()
     .replace(/\s+/g," ")
-    .replace(/[í']/g,"'");
+    .replace(/[‚Äô']/g,"'");
 }
 
 // accent-tolerant check for typed answers (we still show correct answer with accents)
@@ -402,7 +402,7 @@ function renderReflection(){
   const idx = state.step;
   const q = REFLECTION[idx];
   el("blockTitle").textContent = "Reflectie";
-  el("blockSubtitle").textContent = "Beantwoord de vragen. Je krijgt pas na de reflectie feedback en ÈÈn korte oefening.";
+  el("blockSubtitle").textContent = "Beantwoord de vragen. Je krijgt pas na de reflectie feedback en √©√©n korte oefening.";
   setStatus(`Reflectie: vraag ${idx+1}/7`);
 
   content.innerHTML = "";
@@ -451,7 +451,7 @@ function renderReflection(){
     const inp = document.createElement("input");
     inp.className = "short";
     inp.type = "text";
-    inp.placeholder = "Typ hier (max. 1 zin)Ö";
+    inp.placeholder = "Typ hier (max. 1 zin)‚Ä¶";
     inp.setAttribute("maxlength","140");
     optionsWrap.appendChild(inp);
 
@@ -544,7 +544,7 @@ function startPracticePhase(){
 
 function renderPostReflection(){
   el("blockTitle").textContent = "Na je reflectie";
-  el("blockSubtitle").textContent = "Eerst een korte terugkoppeling, daarna oefen je 10 minuten op ÈÈn onderdeel.";
+  el("blockSubtitle").textContent = "Eerst een korte terugkoppeling, daarna oefen je 10 minuten op √©√©n onderdeel.";
 
   content.innerHTML = "";
 
@@ -561,10 +561,10 @@ function renderPostReflection(){
   const q4 = state.answers.q4;
   const q5 = state.answers.q5;
 
-  // 2ñ3 zinnen, erkenning, geen tips
+  // 2‚Äì3 zinnen, erkenning, geen tips
   let t1 = "Dankjewel voor je antwoorden.";
   let t2 = q1 ? `Je zegt dat het ${q1.toLowerCase().replace("het ging ","")} ging.` : "Je hebt nagedacht over hoe het ging.";
-  let t3 = (q4 && q5) ? `Je voorbereiding begon: ì${q4}î, en wat jou het meest hielp was: ì${q5}î.` : "Je hebt ook aangegeven hoe je je hebt voorbereid.";
+  let t3 = (q4 && q5) ? `Je voorbereiding begon: ‚Äú${q4}‚Äù, en wat jou het meest hielp was: ‚Äú${q5}‚Äù.` : "Je hebt ook aangegeven hoe je je hebt voorbereid.";
   fbText.textContent = `${t1} ${t2} ${t3}`;
   content.appendChild(fbText);
 
@@ -576,7 +576,7 @@ function renderPostReflection(){
 
   const concl = document.createElement("p");
   concl.className = "subtitle";
-  const focus = state.practice.focus || "ÈÈn onderdeel";
+  const focus = state.practice.focus || "√©√©n onderdeel";
   concl.textContent =
     `Je neemt de tijd om terug te kijken op je toets, dat helpt je al vooruit. ` +
     `Je eerste focus wordt: ${focus.toLowerCase()}. Dan ga je zo meteen meteen oefenen.`;
@@ -629,7 +629,7 @@ function generatePractice(isFirst=false){
     state.practice.lastSignature = JSON.stringify(items.map(x=>x.ne));
 
   } else if(type === "sentences"){
-    // standaard: zinnen in juiste volgorde (6-7 zinnen) ó alleen bron C/G
+    // standaard: zinnen in juiste volgorde (6-7 zinnen) ‚Äî alleen bron C/G
     const all = SOURCE_C_SENTENCES_FR.concat(SOURCE_G_SENTENCES_FR)
       .map(fr => ({fr}));
 
@@ -652,7 +652,7 @@ function generatePractice(isFirst=false){
         .split(" ")
         .filter(Boolean);
 
-      // simpele shuffle voor ìfoute volgordeî
+      // simpele shuffle voor ‚Äúfoute volgorde‚Äù
       const scrambled = shuffle(parts);
       return { fr:x.fr, parts, scrambled };
     });
@@ -721,7 +721,7 @@ function generatePractice(isFirst=false){
     // Ontkenning: alleen ne...pas en ce n'est pas
     const pool = [
       {sentence:"Je n'aime pas le lait.", answer:"n'aime"},
-      {sentence:"Je n'habite pas ‡ Paris.", answer:"n'habite"},
+      {sentence:"Je n'habite pas √† Paris.", answer:"n'habite"},
       {sentence:"Ce n'est pas bon.", answer:"n'est"},
       {sentence:"Je ne comprends pas.", answer:"comprends"}
     ];
@@ -762,3 +762,4 @@ function generatePractice(isFirst=false){
 
   } else if(type === "reading"){
     // Vaste structuur: 2-3 alinea's, 90-120 woorden, A1, steunwoorden + sim
+
